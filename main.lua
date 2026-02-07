@@ -228,7 +228,7 @@ end
 local function get_extracted_file_url(inputs, path)
 	local path_url = Url(path)
 	local output_url = Url(inputs.output)
-	local full_file_name = path_url.name
+	local full_file_name = path_url.name or "file_name"
 	local file_name_wo_archive_ext = string.gsub(full_file_name, ".%w+$", "", 1)
 	return output_url:join(file_name_wo_archive_ext)
 end
