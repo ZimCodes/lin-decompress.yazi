@@ -1,8 +1,8 @@
 # lin-decompress
 
-A [yazi plugin](https://github.com/sxyazi/yazi) to extract archives using a variety of tools for **Linux**.
+A [yazi plugin](https://github.com/sxyazi/yazi) to extract each archive using a specialized tool for **Linux**.
 
-You can map a variety of different extractor tools to their archive(s) for extraction.
+Map a variety of different extractor tools to their archive(s) for extraction.
 
 ## Support
 
@@ -89,13 +89,13 @@ _**--tabselect=`SELECT_TYPE`**_
 - `current` or `active`
   - Gets selected files from current tab
 - `<nothing>` _(default)_
-  - Does not get selected files
+  - Does not get selected files from any tabs
 
 _**--no-password**_
 
 Do not prompt for password. By default, when an extractor with the ability to use a password is used, the user will be prompt for password.
 
-When the prompt appears, users can enter `!!!` to temporarily disable it for the current run.
+When the prompt appears, users can enter `!!!` to temporarily disable prompting for the current run.
 
 ## License
 
