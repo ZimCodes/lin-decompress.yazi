@@ -1,17 +1,17 @@
 # lin-decompress
 
-A [yazi plugin](https://github.com/sxyazi/yazi) to extract archives using a variety of tools for **Linux**. 
+A [yazi plugin](https://github.com/sxyazi/yazi) to extract archives using a variety of tools for **Linux**.
 
-`lin-decompress` allows you to map a variety of different extractor tools to their archive(s) for extraction. 
+You can map a variety of different extractor tools to their archive(s) for extraction.
 
+## Support
 
-## Archive Support
-`lin-decompress` is customizable enough to support many archives. The table below
-shows how `lin-decompress` utilizes each of the _default_ extractor tools.
+`lin-decompress` is customizable enough to support many archives & extractor tools.
+The table below shows how `lin-decompress` utilizes each of the _default_ extractor tools.
 
 | Extension | Tools | Commands |
 | ---------- | -------- | ------- |
-| `.rar` | `unrar` |`unrar x -op<output> -p<pw> |
+| `.rar` | `unrar` |`unrar x -op<output> -p<pw>` |
 | `.tar`,`.tar.*` | `tar` | `tar -xf <archive> --overwrite -C <output> (-I <tar.* commands>)`|
 |`.lz4` | `lz4` | `lz4 -dkc <archive>` |
 | `.xz` | `xz` | `xz -T0 -dkc <archive>` |
@@ -24,6 +24,7 @@ shows how `lin-decompress` utilizes each of the _default_ extractor tools.
 | _(default)_ `.*`| `7zip` | `7z x -mmt=0 -o<output> -p<pw>` |
 
 ## Installation
+
 ```bash
 # Method 1
 git clone https://github.com/ZimCodes/lin-decompress.yazi ~/.config/yazi/plugins/lin-decompress.yazi/main.lua
@@ -33,13 +34,17 @@ ya pkg add ZimCodes/lin-decompress
 ```
 
 ## Setup
+
 After installation, here are some things you need to setup.
 
 ### Init.lua
-You **must** copy the entire code found in [`INIT.md`](./INIT.md) to your `init.lua`. Afterwards, read the comments for guidelines
-on mapping your extractor tool(s) to their archive(s).
+
+You **must** copy the entire code found in [`INIT.md`](./INIT.md) to your `init.lua`.
+Afterwards, read the comments for guidelines on mapping your extractor tool(s)
+to their archive(s).
 
 ### Keymap
+
 Customize your keymap to your liking. Here's one you can add to your `keymap.toml`:
 
 ```toml
@@ -71,23 +76,24 @@ desc = "Extract selected in current tab only"
 
 ## Options
 
-***--no-hover***
+_**--no-hover**_
 
-Do not extract the file you're currently hovering over. By default, hovered files are extracted. 
+Do not extract the file you're currently hovering over. By default, hovered files are extracted.
 
-***--tabselect=`SELECT_TYPE`***
+_**--tabselect=`SELECT_TYPE`**_
 
 `SELECT_TYPE` choices:
+
 - `all`
   - Gets selected files from all tabs
 - `current` or `active`
-  - Gets selected files from current tab 
+  - Gets selected files from current tab
 - `<nothing>` _(default)_
-  - Does not get selected files 
+  - Does not get selected files
 
-***--no-password***
+_**--no-password**_
 
-Do not prompt for password. By default, when an extractor with the ability to use a password is used, the user will be prompt for password. 
+Do not prompt for password. By default, when an extractor with the ability to use a password is used, the user will be prompt for password.
 
 When the prompt appears, users can enter `!!!` to temporarily disable it for the current run.
 
