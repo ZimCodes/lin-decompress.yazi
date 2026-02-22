@@ -95,7 +95,7 @@ _**--no-password**_
 
 Do not prompt for password. By default, when an extractor with the ability to use a password is used, the user will be prompt for password.
 
-Alternatively, when prompt appears, users can enter `!!!` to temporarily disable prompting for the current run.
+_Alternatively_, when prompt appears, users can enter `!!!` to temporarily disable prompting for the current run.
 
 ## License
 
