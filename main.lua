@@ -216,6 +216,29 @@ local function get_command_args(command, args)
 	end
 	return command
 end
+-- Remove extracted folder with the same name as parent. e.g. (foo/foo/)
+local function remove_dup_dir(archive_dir)
+	local archive_url = Url(archive_dir)
+	local files, err = fs.read_dir(archive_url, { limit = 1 })
+	if err then
+		alert(err, { level = "error" })
+		return
+	end
+	local file = files and files[1] or nil
+	dmsg("Dup Suspect: " .. file.name)
+	dmsg("Dup: " .. file.name .. " and " .. archive_url.name)
+	if not file or not file.cha.is_dir or file.name ~= archive_url.name then
+		dmsg("Directory does not contain duplicate at -> " .. archive_dir)
+		return
+	end
+	local _, err2 = Command("sh"):arg("-c"):arg("mv " .. file.url.path .. "/* " .. archive_dir):output()
+	if err2 then
+		dmsg(err2)
+		dmsg("Failed to move duplicate directory")
+		return
+	end
+	fs.remove("dir", file.url)
+end
 -- Retrieve archive directory save location
 local function get_archive_dir(inputs, path)
 	local url = Url(path)
@@ -324,6 +347,7 @@ local function decompress_file(path, mimetype, inputs)
 	dmsg("Chosen tool -> " .. tool_cmd.tool_name)
 	local archive_dir = get_archive_dir(inputs, path)
 	dmsg("Archive Dir -> " .. archive_dir)
+	local skip_dup_removal = false
 	if cmds.is_tar_type then
 		if string.find(path, "%.tar%.", 1) then
 			create_dir(archive_dir)
@@ -335,6 +359,7 @@ local function decompress_file(path, mimetype, inputs)
 			tar_extract(path, tool_cmd, archive_dir)
 		else
 			create_dir(inputs.output)
+			skip_dup_removal = true
 			dmsg("Extract type -> tar-like")
 			local file_url = get_extracted_file_url(inputs, path)
 			tar_like_extract(path, tool_cmd, file_url)
@@ -343,6 +368,9 @@ local function decompress_file(path, mimetype, inputs)
 		create_dir(archive_dir)
 		dmsg("Extract type -> other")
 		other_extract(path, tool_cmd, archive_dir, inputs)
+	end
+	if not skip_dup_removal then
+		remove_dup_dir(archive_dir)
 	end
 end
 -- Extract all archive files
