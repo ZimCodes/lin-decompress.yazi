@@ -41,7 +41,7 @@ After installation, here are some things you need to setup.
 
 You **must** copy the entire code found in [`INIT.md`](./INIT.md) to your `init.lua`.
 Afterwards, read the comments for guidelines on mapping your extractor tool(s)
-to their archive(s).
+to their archive(s). If you are okay with the defaults, then you're all set!
 
 ### Keymap
 
