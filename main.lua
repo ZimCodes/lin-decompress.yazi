@@ -216,7 +216,7 @@ local function get_command_args(command, args)
 	end
 	return command
 end
--- Remove extracted folder with the same name as parent. e.g. (foo/foo/)
+-- Remove extracted folder with the same name as parent. e.g. (foo/foo/) -> (foo/)
 local function remove_dup_dir(archive_dir)
 	local archive_url = Url(archive_dir)
 	local files, err = fs.read_dir(archive_url, { limit = 1 })
@@ -231,13 +231,14 @@ local function remove_dup_dir(archive_dir)
 		dmsg("Directory does not contain duplicate at -> " .. archive_dir)
 		return
 	end
-	local _, err2 = Command("sh"):arg("-c"):arg("mv " .. file.url.path .. "/* " .. archive_dir):output()
+  local dedup_cmd = "mv " .. ya.quote(tostring(file.url.path)) .. "/* " .. ya.quote(archive_dir) .. " && rmdir " .. ya.quote(tostring(file.url.path))
+  dmsg(dedup_cmd)
+	local _, err2 = Command("sh"):arg("-c"):arg(dedup_cmd):output()
 	if err2 then
 		dmsg(err2)
-		dmsg("Failed to move duplicate directory")
+		dmsg("Failed to move/remove duplicate directory!")
 		return
 	end
-	fs.remove("dir", file.url)
 end
 -- Retrieve archive directory save location
 local function get_archive_dir(inputs, path)
