@@ -216,24 +216,28 @@ local function get_command_args(command, args)
 	end
 	return command
 end
--- Remove extracted folder with the same name as parent. e.g. (foo/foo/) -> (foo/)
-local function remove_dup_dir(archive_dir)
+-- Remove single child directories and relocate its children e.g. (foo/foo/*) -> (foo/*) OR (foo/bar/*) -> (foo/*)
+local function remove_single_child(archive_dir)
 	local archive_url = Url(archive_dir)
-	local files, err = fs.read_dir(archive_url, { limit = 1 })
+	local files, err = fs.read_dir(archive_url, { limit = 2 })
 	if err then
 		alert(err, { level = "error" })
 		return
 	end
+  if #files > 1 then
+    dmsg("Parent directory contains 2+ items.")
+    return
+  end
 	local file = files and files[1] or nil
-	dmsg("Dup Suspect: " .. file.name)
-	dmsg("Dup: " .. file.name .. " and " .. archive_url.name)
-	if not file or not file.cha.is_dir or file.name ~= archive_url.name then
-		dmsg("Directory does not contain duplicate at -> " .. archive_dir)
+	dmsg("Single Child Dir: " .. file.name)
+	dmsg("Dirs: " .. file.name .. " and " .. archive_url.name)
+	if not file or not file.cha.is_dir then
+		dmsg("Parent directory does not contain a directory at -> " .. archive_dir)
 		return
 	end
-  local dedup_cmd = "mv " .. ya.quote(tostring(file.url.path)) .. "/* " .. ya.quote(archive_dir) .. " && rmdir " .. ya.quote(tostring(file.url.path))
-  dmsg(dedup_cmd)
-	local _, err2 = Command("sh"):arg("-c"):arg(dedup_cmd):output()
+  local relocate_cmd = "mv " .. ya.quote(tostring(file.url.path)) .. "/* " .. ya.quote(archive_dir) .. " && rmdir " .. ya.quote(tostring(file.url.path))
+  dmsg(relocate_cmd)
+	local _, err2 = Command("sh"):arg("-c"):arg(relocate_cmd):output()
 	if err2 then
 		dmsg(err2)
 		dmsg("Failed to move/remove duplicate directory!")
@@ -348,7 +352,7 @@ local function decompress_file(path, mimetype, inputs)
 	dmsg("Chosen tool -> " .. tool_cmd.tool_name)
 	local archive_dir = get_archive_dir(inputs, path)
 	dmsg("Archive Dir -> " .. archive_dir)
-	local skip_dup_removal = false
+	local skip_single_child_removal = false
 	if cmds.is_tar_type then
 		if string.find(path, "%.tar%.", 1) then
 			create_dir(archive_dir)
@@ -360,7 +364,7 @@ local function decompress_file(path, mimetype, inputs)
 			tar_extract(path, tool_cmd, archive_dir)
 		else
 			create_dir(inputs.output)
-			skip_dup_removal = true
+			skip_single_child_removal = true
 			dmsg("Extract type -> tar-like")
 			local file_url = get_extracted_file_url(inputs, path)
 			tar_like_extract(path, tool_cmd, file_url)
@@ -370,8 +374,8 @@ local function decompress_file(path, mimetype, inputs)
 		dmsg("Extract type -> other")
 		other_extract(path, tool_cmd, archive_dir, inputs)
 	end
-	if not skip_dup_removal then
-		remove_dup_dir(archive_dir)
+	if not skip_single_child_removal then
+		remove_single_child(archive_dir)
 	end
 end
 -- Extract all archive files
