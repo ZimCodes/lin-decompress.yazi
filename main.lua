@@ -26,8 +26,8 @@ local get_files = ya.sync(function(state, args)
 			table.insert(tabs, cx.active)
 		end
 		for _, tab in pairs(tabs) do
-			for _, url in pairs(tab.selected) do
-				table.insert(paths, tostring(url.path))
+			for _, file in pairs(tab.selected) do
+				table.insert(paths, tostring(file.url.path))
 			end
 		end
 	end
@@ -224,10 +224,10 @@ local function remove_single_child(archive_dir)
 		alert(err, { level = "error" })
 		return
 	end
-  if #files > 1 then
-    dmsg("Parent directory contains 2+ items.")
-    return
-  end
+	if #files > 1 then
+		dmsg("Parent directory contains 2+ items.")
+		return
+	end
 	local file = files and files[1] or nil
 	dmsg("Single Child Dir: " .. file.name)
 	dmsg("Dirs: " .. file.name .. " and " .. archive_url.name)
@@ -235,8 +235,13 @@ local function remove_single_child(archive_dir)
 		dmsg("Parent directory does not contain a directory at -> " .. archive_dir)
 		return
 	end
-  local relocate_cmd = "mv " .. ya.quote(tostring(file.url.path)) .. "/* " .. ya.quote(archive_dir) .. " && rmdir " .. ya.quote(tostring(file.url.path))
-  dmsg(relocate_cmd)
+	local relocate_cmd = "mv "
+		.. ya.quote(tostring(file.url.path))
+		.. "/* "
+		.. ya.quote(archive_dir)
+		.. " && rmdir "
+		.. ya.quote(tostring(file.url.path))
+	dmsg(relocate_cmd)
 	local _, err2 = Command("sh"):arg("-c"):arg(relocate_cmd):output()
 	if err2 then
 		dmsg(err2)
