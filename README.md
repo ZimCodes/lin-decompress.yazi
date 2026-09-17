@@ -7,6 +7,7 @@ Configure **archive-to-tool** mappings.
 ## Support
 
 `lin-decompress` can be configured to support a variety of archive formats and extraction tools.
+
 The table below shows how `lin-decompress` uses each of the _default_ extraction tools.
 
 | Extension | Tools | Commands |
