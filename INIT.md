@@ -1,18 +1,17 @@
 ```lua
   require("lin-decompress"):setup({
- -- Global commands for all .tar.* archives (e.g. .tar.lz, .tar.lzo, .tar.gz)
+ -- Global commands appended to each .tar.* archive (e.g. .tar.lz, .tar.lzo, .tar.gz)
  global_tar_compressor = {
-  -- Commands for each .tar.* archive,
-  -- Appends these 'cmd's only if 'no_global_tar = false' is set for a .tar.* configuration below
+  -- To prevent these commands from being appended to a .tar.* configuration, set 'no_global_tar = false'.
   cmd = { "-dkc" },
  },
 
- -- NOTE: Use the '[name of mimetype]' portion when defining new extractors'
+ -- NOTE: Use the '[<name of mimetype>]' portion when defining new extractors'
  --
  -- Schema:
  -- ["application/[<name of mimetype>]"] ={
- --  tool_name = "Name of tool to use for this mimetype",
- --  cmd = { list of arguments to use},
+ --  tool_name = "Name of tool to use for this mimetype"
+ --  cmd = { list of arguments to use} (optional)
  --  no_global_tar = true (default: false) (Appends the commands specified in the 'global_tar_compressor.cmd')
  --  exts = {extension_name = true, ...} (Extension names of the archive to extract. Used only as a fallback in case mime detection fails)
  -- }
@@ -75,7 +74,7 @@
    },
   },
  },
- -- NOTE: Use the '[name of mimetype]' portion when defining new extractors'
+ -- NOTE: Use the '[<name of mimetype>]' portion when defining new extractors'
  --
  -- Schema:
  -- ["application/[name of mimetype]"] ={
