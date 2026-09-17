@@ -1,6 +1,6 @@
 # lin-decompress
 
-A [yazi plugin](https://github.com/sxyazi/yazi) for extracting archives using specialized Linux tools.
+A [yazi plugin](https://github.com/sxyazi/yazi) for extracting archives using specialized **Linux** tools.
 
 Configure **archive-to-tool** mappings.
 
